@@ -26,6 +26,7 @@ module.exports = {
     'no-unused-vars': process.env.NODE_ENV === 'production' ? 2 : 0,
     'quotes': process.env.NODE_ENV === 'production' ? 2 : 0,
     'semi': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'space-before-function-paren': 0
+    'space-before-function-paren': 0,
+    'indent': 0
   }
 }
