@@ -12,13 +12,13 @@
         >3 replies by 3 contributors</span>
       </p>
       <post-list :posts="posts"></post-list>
-      <post-editor @save="addPost" :threadId="id"></post-editor>
+      <post-editor :threadId="id"></post-editor>
+      <!-- <post-editor @save="addPost" :threadId="id"></post-editor> -->
     </div>
   </div>
 </template>
 
 <script>
-import sourceData from "@/data.json";
 import PostList from "@/components/PostList";
 import PostEditor from "@/components/PostEditor";
 export default {
@@ -34,27 +34,23 @@ export default {
   },
   data() {
     return {
-      thread: sourceData.threads[this.id],
+      thread: this.$store.state.threads[this.id],
       newPostText: ""
     };
   },
   computed: {
     posts() {
       const postsIds = Object.values(this.thread.posts);
-      return Object.values(sourceData.posts).filter(post =>
+      return Object.values(this.$store.state.posts).filter(post =>
         postsIds.includes(post[".key"])
       );
     }
-  },
-  methods: {
-    addPost(eventData) {
-      const post = eventData.post;
-      const postId = eventData.post[".key"];
-      this.$set(sourceData.posts, postId, post);
-      this.$set(this.thread.posts, postId, postId);
-      this.$set(sourceData.users[post.userId].posts, postId, postId);
-    }
   }
+  // methods: {
+  //   addPost({ post }) {
+  //     this.$store.dispatch("createPost", post);
+  //   }
+  // }
 };
 </script>
 

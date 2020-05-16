@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import sourceData from "@/data";
 // import moment from "moment";
 import appDate from "./AppDate";
 
@@ -33,7 +32,7 @@ export default {
   },
   computed: {
     user() {
-      return sourceData.users[this.post.userId];
+      return this.$store.state.users[this.post.userId];
     },
     userPostsCount() {
       return Object.keys(this.user.posts).length;
