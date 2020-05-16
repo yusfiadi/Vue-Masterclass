@@ -1,24 +1,22 @@
 <template>
   <div class="col-full">
     <h2>Welcome to the Forum</h2>
-    <forum-list :forums="forums"></forum-list>
+    <category-list :categories="categories"></category-list>
   </div>
 </template>
 
 <script>
 import sourceData from "@/data.json";
-import ForumList from "@/components/ForumList";
+import CategoryList from "@/components/CategoryList";
 
 console.log(sourceData);
 export default {
   components: {
-    ForumList
+    CategoryList
   },
   data() {
     return {
-      forums: Object.values(sourceData.forums), // Diubah ke Array
-      posts: sourceData.posts,
-      users: sourceData.users
+      categories: Object.values(sourceData.categories) // Diubah ke Array
     };
   }
 };
