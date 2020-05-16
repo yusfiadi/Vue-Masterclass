@@ -30,6 +30,14 @@ export default new Vuex.Store({
         userId: post.userId,
         postId
       })
+    },
+    updateUser({
+      commit
+    }, user) {
+      commit('setUser', {
+        userId: user['.key'],
+        user
+      })
     }
   },
   mutations: {
@@ -52,6 +60,12 @@ export default new Vuex.Store({
     }) {
       const user = state.users[userId]
       Vue.set(user.posts, postId, postId);
+    },
+    setUser(state, {
+      user,
+      userId
+    }) {
+      Vue.set(state.users, userId, user);
     }
   }
 })
