@@ -19,7 +19,7 @@
 <script>
 // import moment from "moment";
 import appDate from "./AppDate";
-
+import { countObjectProperties } from "@/utils";
 export default {
   components: {
     appDate
@@ -35,7 +35,7 @@ export default {
       return this.$store.state.users[this.post.userId];
     },
     userPostsCount() {
-      return Object.keys(this.user.posts).length;
+      return countObjectProperties(this.user.posts);
     }
   }
   // filters: {

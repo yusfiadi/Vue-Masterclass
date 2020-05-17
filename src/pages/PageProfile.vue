@@ -28,6 +28,8 @@ import { mapGetters } from "vuex";
 import PostList from "@/components/PostList";
 import UserProfileCard from "@/components/UserProfileCard";
 import UserProfileCardEditor from "@/components/UserProfileCardEditor";
+import { countObjectProperties } from "@/utils";
+
 export default {
   components: {
     PostList,
@@ -39,10 +41,10 @@ export default {
       user: "authUser"
     }),
     userThreadsCount() {
-      return this.user.threads ? Object.values(this.user.threads).length : 0;
+      return countObjectProperties(this.user.threads);
     },
     userPostsCount() {
-      return this.user.posts ? Object.values(this.user.posts).length : 0;
+      return countObjectProperties(this.user.posts);
     },
     userPosts() {
       if (this.user.posts) {

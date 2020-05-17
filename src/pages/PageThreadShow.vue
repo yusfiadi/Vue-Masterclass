@@ -46,6 +46,7 @@ export default {
       );
     }
   }
+  // sudah ada di PostEditor
   // methods: {
   //   addPost({ post }) {
   //     this.$store.dispatch("createPost", post);
