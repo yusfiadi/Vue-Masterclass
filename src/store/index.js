@@ -91,7 +91,8 @@ export default new Vuex.Store({
     },
     updateThread({
       commit,
-      state
+      state,
+      dispatch
     }, {
       title,
       text,
@@ -99,25 +100,20 @@ export default new Vuex.Store({
     }) {
       return new Promise((resolve, reject) => {
         const thread = state.threads[id]
-        const post = state.posts[thread.firstPostId]
-
         const newThread = {
           ...thread,
           title
-        }
-        const newPost = {
-          ...post,
-          text
         }
         commit('setThread', {
           thread: newThread,
           threadId: id
         })
-        commit('setPost', {
-          post: newPost,
-          postId: thread.firstPostId
+        dispatch('updatePost', {
+          id: thread.firstPostId,
+          text
+        }).then(() => {
+          resolve(newThread)
         })
-        resolve(newThread)
       })
     },
     updatePost({
@@ -133,7 +129,11 @@ export default new Vuex.Store({
           postId: id,
           post: {
             ...post,
-            text
+            text,
+            edited: {
+              at: Math.floor(Date.now() / 1000),
+              by: state.authId
+            }
           }
         })
         resolve(post)
