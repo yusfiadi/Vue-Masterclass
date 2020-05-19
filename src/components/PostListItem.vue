@@ -8,11 +8,22 @@
       <p class="desktop-only text-small">{{ userPostsCount }} posts</p>
     </div>
     <div class="post-content">
-      <div>
-        <div v-if="!editing">{{ post.text }}</div>
-        <div v-else>
-          <PostEditor :post="post" @save="editing = false" />
-        </div>
+      <template v-if="!editing">
+        <div>{{ post.text }}</div>
+        <a
+          @click.prevent="editing=true"
+          v-if="!editing"
+          href="#"
+          style="margin-left:auto"
+          class="link-unstyled"
+          title="Make a change"
+        >
+          <i class="fa fa-pencil"></i>
+        </a>
+      </template>
+
+      <div v-else>
+        <PostEditor :post="post" @save="editing = false" />
       </div>
     </div>
     <div class="post-date tex-faded">
@@ -39,7 +50,7 @@ export default {
   },
   data() {
     return {
-      editing: true
+      editing: false
     };
   },
   computed: {
