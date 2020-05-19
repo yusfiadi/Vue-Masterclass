@@ -23,7 +23,7 @@
       </template>
 
       <div v-else>
-        <PostEditor :post="post" @save="editing = false" />
+        <post-editor :post="post" @save="editing = false" @cancel="editing = false"></post-editor>
       </div>
     </div>
     <div class="post-date tex-faded">
