@@ -8,7 +8,12 @@
       <p class="desktop-only text-small">{{ userPostsCount }} posts</p>
     </div>
     <div class="post-content">
-      <div>{{ post.text }}</div>
+      <div>
+        <div v-if="!editing">{{ post.text }}</div>
+        <div v-else>
+          <PostEditor :post="post" @save="editing = false" />
+        </div>
+      </div>
     </div>
     <div class="post-date tex-faded">
       <app-date :timestamp="post.publishedAt"></app-date>
@@ -20,15 +25,22 @@
 // import moment from "moment";
 import appDate from "./AppDate";
 import { countObjectProperties } from "@/utils";
+import PostEditor from "./PostEditor";
 export default {
   components: {
-    appDate
+    appDate,
+    PostEditor
   },
   props: {
     post: {
       required: true,
       type: Object
     }
+  },
+  data() {
+    return {
+      editing: true
+    };
   },
   computed: {
     user() {
