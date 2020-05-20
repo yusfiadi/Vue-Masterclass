@@ -58,8 +58,11 @@ export default {
       // get the userId
       const userIds = replies.map(post => post.userId);
       // count the unique ids
-      return userIds.filter((item, index) => index === userIds.indexOf(item))
-        .length;
+      // return userIds.filter((item, index) => index === userIds.indexOf(item))
+      //   .length;
+
+      // Versi ES6
+      return [...new Set(userIds)].length;
     }
   }
   // sudah ada di PostEditor
