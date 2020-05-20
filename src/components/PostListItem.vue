@@ -36,7 +36,6 @@
 <script>
 // import moment from "moment";
 import appDate from "./AppDate";
-import { countObjectProperties } from "@/utils";
 import PostEditor from "./PostEditor";
 export default {
   components: {
@@ -59,7 +58,7 @@ export default {
       return this.$store.state.users[this.post.userId];
     },
     userPostsCount() {
-      return countObjectProperties(this.user.posts);
+      return this.$store.getters.userPostsCount(this.post.userId);
     }
   }
   // filters: {
