@@ -14,7 +14,7 @@
         <span
           style="float:right; margin-top: 2px;"
           class="hide-mobile text-faded text-small"
-        >3 replies by 3 contributors</span>
+        >{{ repliesCount }} replies by {{contributorsCount}} contributors</span>
       </p>
       <post-list :posts="posts"></post-list>
       <post-editor :threadId="id"></post-editor>
@@ -46,6 +46,20 @@ export default {
       return Object.values(this.$store.state.posts).filter(post =>
         postsIds.includes(post[".key"])
       );
+    },
+    repliesCount() {
+      return this.$store.getters.threadRepliesCount(this.thread[".key"]);
+    },
+    contributorsCount() {
+      // find the repies
+      const replies = Object.keys(this.thread.posts)
+        .filter(postId => postId !== this.thread.firstPostId)
+        .map(postId => this.$store.state.posts[postId]);
+      // get the userId
+      const userIds = replies.map(post => post.userId);
+      // count the unique ids
+      return userIds.filter((item, index) => index === userIds.indexOf(item))
+        .length;
     }
   }
   // sudah ada di PostEditor
