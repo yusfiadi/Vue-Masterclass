@@ -9,7 +9,7 @@
       >Edit Thread</router-link>
       <p>
         By
-        <a href="#" class="link-unstyled">Robin</a>,
+        <a href="#" class="link-unstyled">{{ user.name }}</a>,
         <app-date :timestamp="thread.publishedAt"></app-date>.
         <span
           style="float:right; margin-top: 2px;"
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
 import PostList from "@/components/PostList";
 import PostEditor from "@/components/PostEditor";
 export default {
@@ -40,6 +41,9 @@ export default {
   computed: {
     thread() {
       return this.$store.state.threads[this.id];
+    },
+    user() {
+      return this.$store.state.users[this.thread.userId];
     },
     posts() {
       const postsIds = Object.values(this.thread.posts);
@@ -64,13 +68,17 @@ export default {
       // Versi ES6
       return [...new Set(userIds)].length;
     }
+  },
+  created() {
+    firebase
+      .database()
+      .ref("threads")
+      .child(this.id)
+      .once("value", snapshot => {
+        const thread = snapshot.val();
+        this.$store.commit("setThread", { threadId: snapshot.key, thread });
+      });
   }
-  // sudah ada di PostEditor
-  // methods: {
-  //   addPost({ post }) {
-  //     this.$store.dispatch("createPost", post);
-  //   }
-  // }
 };
 </script>
 
