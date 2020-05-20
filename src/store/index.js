@@ -180,13 +180,16 @@ export default new Vuex.Store({
       })
     },
     fetchThread({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'threads', id, emoji: 'threads gan....' })
+      return dispatch('fetchItem', { resource: 'threads', id, emoji: 'thread gan....' })
     },
     fetchUser({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'users', id, emoji: 'users gan..' })
+      return dispatch('fetchItem', { resource: 'users', id, emoji: 'user gan..' })
     },
     fetchPost({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'posts', id, emoji: 'posts gan....' })
+      return dispatch('fetchItem', { resource: 'posts', id, emoji: 'post gan....' })
+    },
+    fetchPosts({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'posts', ids, emoji: 'posts sis' })
     },
     fetchItem({ state, commit }, { id, emoji, resource }) {
       console.log(`haloo ${emoji}, ${id}`)
@@ -196,6 +199,9 @@ export default new Vuex.Store({
           resolve(state[resource][id])
         })
       })
+    },
+    fetchItems({ dispatch }, { ids, resource, emoji }) {
+      return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource, emoji })))
     }
   },
   mutations: {
