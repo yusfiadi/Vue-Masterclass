@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && text" class="col-full push-top">
     <h1>
       Editing
       <i>{{thread.title}}</i>
@@ -26,7 +26,8 @@ export default {
     },
     // dapetin text first post dari thread
     text() {
-      return this.$store.state.posts[this.thread.firstPostId].text;
+      const post = this.$store.state.posts[this.thread.firstPostId];
+      return post ? post.text : null;
     }
   },
   methods: {
@@ -51,6 +52,11 @@ export default {
         params: { id: this.id }
       });
     }
+  },
+  created() {
+    this.$store.dispatch("fetchThread", { id: this.id }).then(thread => {
+      this.$store.dispatch("fetchPost", { id: thread.firstPostId });
+    });
   }
 };
 </script>

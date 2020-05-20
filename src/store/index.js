@@ -179,6 +179,37 @@ export default new Vuex.Store({
         user
       })
     },
+    fetchCategory({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'categories', id, emoji: 'category gan...' })
+    },
+
+    fetchForum({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'forums', id, emoji: 'forum gann...' })
+    },
+    fetchThread({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'threads', id, emoji: 'thread gan....' })
+    },
+    fetchPost({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'posts', id, emoji: 'post gan...' })
+    },
+    fetchUser({ dispatch }, { id }) {
+      return dispatch('fetchItem', { resource: 'users', id, emoji: 'user gan..' })
+    },
+    fetchCategories({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'categories', ids, emoji: 'categories sis' })
+    },
+    fetchForums({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'forums', ids, emoji: 'forums sis' })
+    },
+    fetchThreads(context, { ids }) {
+      return context.dispatch('fetchItems', { resource: 'threads', ids, emoji: 'threads sis' })
+    },
+    fetchPosts({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'posts', ids, emoji: 'posts sis' })
+    },
+    fetchUsers({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { resource: 'users', ids, emoji: 'users sis' })
+    },
     fetchAllCategories({ state, commit }) {
       console.log(`haloo all categories`)
       return new Promise((resolve, reject) => {
@@ -192,21 +223,6 @@ export default new Vuex.Store({
         resolve(Object.values(state.categories))
       })
     },
-    fetchForums({ dispatch }, { ids }) {
-      return dispatch('fetchItems', { resource: 'forums', ids, emoji: 'forums sis' })
-    },
-    fetchThread({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'threads', id, emoji: 'thread gan....' })
-    },
-    fetchUser({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'users', id, emoji: 'user gan..' })
-    },
-    fetchPost({ dispatch }, { id }) {
-      return dispatch('fetchItem', { resource: 'posts', id, emoji: 'post gan....' })
-    },
-    fetchPosts({ dispatch }, { ids }) {
-      return dispatch('fetchItems', { resource: 'posts', ids, emoji: 'posts sis' })
-    },
     fetchItem({ state, commit }, { id, emoji, resource }) {
       console.log(`haloo ${emoji}, ${id}`)
       return new Promise((resolve, reject) => {
@@ -217,6 +233,7 @@ export default new Vuex.Store({
       })
     },
     fetchItems({ dispatch }, { ids, resource, emoji }) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids)
       return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource, emoji })))
     }
   },
