@@ -159,8 +159,8 @@ export default {
           const category = categoriesObject[categoryId]
           commit('setItem', { resource: 'categories', id: categoryId, item: category })
         })
+        resolve(Object.values(state.categories))
       })
-      resolve(Object.values(state.categories))
     })
   },
   fetchItem({ state, commit }, { id, emoji, resource }) {
