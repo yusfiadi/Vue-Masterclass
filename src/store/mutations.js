@@ -45,6 +45,10 @@ export default {
     child: 'posts',
     parent: 'threads'
   }),
+  appendContributorToThread: makeAppendChildToParentMutation({
+    child: 'contributors',
+    parent: 'threads'
+  }),
   appendPostToUser: makeAppendChildToParentMutation({
     child: 'posts',
     parent: 'users'
