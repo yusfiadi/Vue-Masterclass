@@ -6,7 +6,9 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import CategoryListItem from "@/components/CategoryListItem";
+
 export default {
   components: {
     CategoryListItem
@@ -22,9 +24,13 @@ export default {
       return this.$store.state.categories[this.id];
     }
   },
+  methods: {
+    ...mapActions(["fetchCategory", "fetchForums"])
+  },
+  // PageHome dan PageCategory saja yg menggunakan mapActions
   created() {
-    this.$store.dispatch("fetchCategory", { id: this.id }).then(category => {
-      this.$store.dispatch("fetchForums", {
+    this.fetchCategory({ id: this.id }).then(category => {
+      this.fetchForums({
         ids: category.forums
       });
     });
