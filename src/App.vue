@@ -2,27 +2,43 @@
   <div id="app">
     <the-navbar></the-navbar>
     <div class="container">
-      <router-view v-show="showPage" @ready="showPage = true" />
-      <div v-show="!showPage">loading....</div>
+      <router-view v-show="showPage" @ready="pageReady" />
+      <app-spinner v-show="!showPage"></app-spinner>
     </div>
   </div>
 </template>
 
 <script>
 import TheNavbar from "@/components/TheNavbar";
+import AppSpinner from "@/components/AppSpinner";
+import NProgress from "nprogress";
+
 export default {
   components: {
-    TheNavbar
+    TheNavbar,
+    AppSpinner
   },
   data() {
     return {
       showPage: false
     };
   },
+  methods: {
+    pageReady() {
+      this.showPage = true;
+      NProgress.done();
+    }
+  },
   created() {
+    NProgress.configure({
+      speed: 200,
+      showSpinner: false
+    });
+    NProgress.start();
     // ubah showPage menjadi false lagi setiap route berubah
     this.$router.beforeEach((to, from, next) => {
       this.showPage = false;
+      NProgress.start();
       next();
     });
   }
@@ -31,4 +47,9 @@ export default {
 
 <style>
 @import "assets/css/style.css";
+@import "~nprogress/nprogress.css";
+
+#nprogress .bar {
+  background: #7abda5;
+}
 </style>

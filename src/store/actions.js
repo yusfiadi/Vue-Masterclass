@@ -297,7 +297,7 @@ export default {
             id: snapshot.key,
             item: snapshot.val()
           });
-          setTimeout(() => resolve(state[resource][id]), 1000);
+          resolve(state[resource][id]);
         });
     });
   },
