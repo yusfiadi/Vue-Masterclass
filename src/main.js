@@ -1,42 +1,42 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
-import router from './router'
-import store from '@/store'
-import firebase from 'firebase'
-import Appdate from '@/components/AppDate'
+import Vue from "vue";
+import App from "./App";
+import router from "./router";
+import store from "@/store";
+import firebase from "firebase";
+import Appdate from "@/components/AppDate";
 
-Vue.component('AppDate', Appdate)
+Vue.component("AppDate", Appdate);
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAyGw-e-AG7-pUaJFVje_aKqOwO-xGHlRQ",
-  authDomain: "vue-forum-c6ce5.firebaseapp.com",
-  databaseURL: "https://vue-forum-c6ce5.firebaseio.com",
-  projectId: "vue-forum-c6ce5",
-  storageBucket: "vue-forum-c6ce5.appspot.com",
-  messagingSenderId: "561534354223",
-  appId: "1:561534354223:web:efdbb0dbbcb39001dc17da",
-  measurementId: "G-CV3EWLEQYZ"
+  apiKey: "process.env.FIREBASE_API_KEY",
+  authDomain: "process.env.FIREBASE_AUTH_DOMAIN",
+  databaseURL: "process.env.FIREBASE_DATABASE_URL",
+  projectId: "process.env.FIREBASE_PROJECT_ID",
+  storageBucket: "process.env.FIREBASE_STORAGE_BUCKET",
+  messagingSenderId: "process.env.FIREBASE_MESSAGING_SENDER_ID",
+  appId: "process.env.FIREBASE_APP_ID",
+  measurementId: "process.env.FIREBASE_MEASUREMENT_ID"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: "#app",
   router,
   store,
-  template: '<App/>',
+  template: "<App/>",
   components: {
     App
   },
   beforeCreate() {
     // fetchUser dulu sebelum fetch data2 nya
-    store.dispatch('fetchUser', { id: store.state.authId })
+    store.dispatch("fetchUser", { id: store.state.authId });
   }
-})
+});
