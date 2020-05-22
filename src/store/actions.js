@@ -297,20 +297,14 @@ export default {
             id: snapshot.key,
             item: snapshot.val()
           });
-          resolve(state[resource][id]);
+          setTimeout(() => resolve(state[resource][id]), 1000);
         });
     });
   },
   fetchItems({ dispatch }, { ids, resource, emoji }) {
     ids = Array.isArray(ids) ? ids : Object.keys(ids);
     return Promise.all(
-      ids.map(id =>
-        dispatch("fetchItem", {
-          id,
-          resource,
-          emoji
-        })
-      )
+      ids.map(id => dispatch("fetchItem", { id, resource, emoji }))
     );
   }
 };
