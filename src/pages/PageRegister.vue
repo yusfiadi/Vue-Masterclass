@@ -57,11 +57,8 @@ export default {
   },
   methods: {
     register() {
-      console.log("Register user success!");
-      console.log(this.form);
-      this.$store
-        .dispatch("createUser", this.form)
-        .then(() => this.$router.push('/'));
+      this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
+        .then(() => this.$router.push("/"));
     }
   },
   created() {
