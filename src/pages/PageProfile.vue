@@ -1,6 +1,7 @@
 <template>
   <div class="flex-grid">
-    <user-profile-card v-if="!edit" :user="user"></user-profile-card>
+    <h1>My Profile</h1>
+    <!-- <user-profile-card v-if="!edit" :user="user"></user-profile-card>
     <user-profile-card-editor v-else :user="user"></user-profile-card-editor>
 
     <div class="col-7 push-top">
@@ -11,7 +12,7 @@
 
       <hr />
       <post-list :posts="userPosts"></post-list>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import { mapGetters } from "vuex";
 import PostList from "@/components/PostList";
 import UserProfileCard from "@/components/UserProfileCard";
 import UserProfileCardEditor from "@/components/UserProfileCardEditor";
+import store from "@/store";
 
 export default {
   components: {
@@ -45,6 +47,16 @@ export default {
       }
       return [];
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (store.state.authId) {
+      next();
+    } else {
+      next({ name: "Home" });
+    }
+  },
+  created() {
+    this.$emit("ready");
   }
 };
 </script>

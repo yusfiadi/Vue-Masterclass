@@ -1,67 +1,60 @@
-import Vue from 'vue'
+import Vue from "vue";
 
-const makeAppendChildToParentMutation = ({
-  parent,
-  child
-}) => (state, {
-  childId,
-  parentId
-}) => {
-    const resource = state[parent][parentId]
-    if (!resource[child]) {
-      Vue.set(resource, child, {})
-    }
-    Vue.set(resource[child], childId, childId);
+const makeAppendChildToParentMutation = ({ parent, child }) => (
+  state,
+  { childId, parentId }
+) => {
+  const resource = state[parent][parentId];
+  if (!resource[child]) {
+    Vue.set(resource, child, {});
   }
+  Vue.set(resource[child], childId, childId);
+};
 
 export default {
-  setPost(state, {
-    postId,
-    post
-  }) {
+  setPost(state, { post, postId }) {
     Vue.set(state.posts, postId, post);
   },
-  setUser(state, {
-    user,
-    userId
-  }) {
+
+  setUser(state, { user, userId }) {
     Vue.set(state.users, userId, user);
   },
-  setThread(state, {
-    thread,
-    threadId
-  }) {
+
+  setThread(state, { thread, threadId }) {
     Vue.set(state.threads, threadId, thread);
   },
-  setItem(state, {
-    item,
-    id,
-    resource
-  }) {
-    item['.key'] = id
+
+  setItem(state, { item, id, resource }) {
+    item[".key"] = id;
     Vue.set(state[resource], id, item);
   },
+
   setAuthId(state, id) {
-    state.authId = id
+    state.authId = id;
   },
+
   appendPostToThread: makeAppendChildToParentMutation({
-    child: 'posts',
-    parent: 'threads'
+    parent: "threads",
+    child: "posts"
   }),
+
   appendContributorToThread: makeAppendChildToParentMutation({
-    child: 'contributors',
-    parent: 'threads'
+    parent: "threads",
+    child: "contributors"
   }),
+
   appendPostToUser: makeAppendChildToParentMutation({
-    child: 'posts',
-    parent: 'users'
+    parent: "users",
+    child: "posts"
   }),
+
   appendThreadToForum: makeAppendChildToParentMutation({
-    child: 'threads',
-    parent: 'forums'
+    parent: "forums",
+    child: "threads"
   }),
+
   appendThreadToUser: makeAppendChildToParentMutation({
-    child: 'threads',
-    parent: 'users'
+    parent: "users",
+    child: "threads"
   })
-}
+};

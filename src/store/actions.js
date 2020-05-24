@@ -20,28 +20,21 @@ export default {
       .ref()
       .update(updates)
       .then(() => {
-        commit("setItem", {
-          resource: "posts",
-          item: post,
-          id: postId
-        });
+        commit("setItem", { resource: "posts", item: post, id: postId });
         commit("appendPostToThread", {
-          childId: postId,
-          parentId: post.threadId
+          parentId: post.threadId,
+          childId: postId
         });
         commit("appendContributorToThread", {
-          childId: post.userId,
-          parentId: post.threadId
+          parentId: post.threadId,
+          childId: post.userId
         });
-        commit("appendPostToUser", {
-          childId: postId,
-          parentId: post.userId
-        });
-        // untuk dapetin firstPostId setelah createPost
+        commit("appendPostToUser", { parentId: post.userId, childId: postId });
         return Promise.resolve(state.posts[postId]);
       });
   },
-  createThread({ commit, state, dispatch }, { title, text, forumId }) {
+
+  createThread({ state, commit, dispatch }, { text, title, forumId }) {
     return new Promise((resolve, reject) => {
       const threadId = firebase
         .database()
@@ -53,28 +46,21 @@ export default {
         .push().key;
       const userId = state.authId;
       const publishedAt = Math.floor(Date.now() / 1000);
+
       const thread = {
-        forumId,
         title,
+        forumId,
         publishedAt,
         userId,
         firstPostId: postId,
         posts: {}
       };
       thread.posts[postId] = postId;
-      const post = {
-        text,
-        publishedAt,
-        threadId,
-        userId
-      };
+      const post = { text, publishedAt, threadId, userId };
 
       const updates = {};
-      // set the thread
       updates[`threads/${threadId}`] = thread;
-      // append to forum
       updates[`forums/${forumId}/threads/${threadId}`] = threadId;
-      // append to user
       updates[`users/${userId}/threads/${threadId}`] = threadId;
 
       updates[`posts/${postId}`] = post;
@@ -87,53 +73,42 @@ export default {
           // update thread
           commit("setItem", {
             resource: "threads",
-            item: thread,
-            id: threadId
+            id: threadId,
+            item: thread
           });
           commit("appendThreadToForum", {
-            childId: threadId,
-            parentId: forumId
+            parentId: forumId,
+            childId: threadId
           });
-          commit("appendThreadToUser", {
-            childId: threadId,
-            parentId: userId
-          });
-
+          commit("appendThreadToUser", { parentId: userId, childId: threadId });
           // update post
-          commit("setItem", {
-            resource: "posts",
-            item: post,
-            id: postId
-          });
+          commit("setItem", { resource: "posts", item: post, id: postId });
           commit("appendPostToThread", {
-            childId: postId,
-            parentId: post.threadId
+            parentId: post.threadId,
+            childId: postId
           });
           commit("appendPostToUser", {
-            childId: postId,
-            parentId: post.userId
+            parentId: post.userId,
+            childId: postId
           });
 
           resolve(state.threads[threadId]);
-
-          // untuk dapetin firstPostId setelah createPost
-          // return Promise.resolve(state.posts[postId])
         });
     });
   },
-  // Action to register user
+
   createUser({ state, commit }, { id, email, name, username, avatar = null }) {
     return new Promise((resolve, reject) => {
       const registeredAt = Math.floor(Date.now() / 1000);
       const usernameLower = username.toLowerCase();
       email = email.toLowerCase();
       const user = {
+        avatar,
         email,
         name,
         username,
         usernameLower,
-        registeredAt,
-        avatar
+        registeredAt
       };
       firebase
         .database()
@@ -146,6 +121,7 @@ export default {
         });
     });
   },
+
   registerUserWithEmailAndPassword(
     { dispatch },
     { email, name, username, password, avatar = null }
@@ -153,7 +129,7 @@ export default {
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(({ user }) => {
+      .then(user => {
         return dispatch("createUser", {
           id: user.uid,
           email,
@@ -165,9 +141,11 @@ export default {
       })
       .then(() => dispatch("fetchAuthUser"));
   },
+
   signInWithEmailAndPassword(context, { email, password }) {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
+
   signInWithGoogle({ dispatch }) {
     const provider = new firebase.auth.GoogleAuthProvider();
     return firebase
@@ -192,15 +170,17 @@ export default {
           });
       });
   },
+
   signOut({ commit }) {
-    firebase
+    return firebase
       .auth()
       .signOut()
       .then(() => {
         commit("setAuthId", null);
       });
   },
-  updateThread({ commit, state, dispatch }, { title, text, id }) {
+
+  updateThread({ state, commit, dispatch }, { title, text, id }) {
     return new Promise((resolve, reject) => {
       const thread = state.threads[id];
       const post = state.posts[thread.firstPostId];
@@ -214,30 +194,22 @@ export default {
       updates[`posts/${thread.firstPostId}/text`] = text;
       updates[`posts/${thread.firstPostId}/edited`] = edited;
       updates[`threads/${id}/title`] = title;
+
       firebase
         .database()
         .ref()
         .update(updates)
         .then(() => {
-          commit("setThread", {
-            thread: {
-              ...thread,
-              title
-            },
-            threadId: id
-          });
+          commit("setThread", { thread: { ...thread, title }, threadId: id });
           commit("setPost", {
             postId: thread.firstPostId,
-            post: {
-              ...post,
-              text,
-              edited
-            }
+            post: { ...post, text, edited }
           });
           resolve(post);
         });
     });
   },
+
   updatePost({ state, commit }, { id, text }) {
     return new Promise((resolve, reject) => {
       const post = state.posts[id];
@@ -245,48 +217,30 @@ export default {
         at: Math.floor(Date.now() / 1000),
         by: state.authId
       };
-      commit("setPost", {
-        postId: id,
-        post: {
-          ...post,
-          text,
-          edited
-        }
-      });
 
-      const updates = {
-        text,
-        edited
-      };
+      const updates = { text, edited };
       firebase
         .database()
         .ref("posts")
         .child(id)
         .update(updates)
         .then(() => {
-          commit("setPost", {
-            postId: id,
-            post: {
-              ...post,
-              text,
-              edited
-            }
-          });
+          commit("setPost", { postId: id, post: { ...post, text, edited } });
           resolve(post);
         });
     });
   },
+
   updateUser({ commit }, user) {
-    commit("setUser", {
-      userId: user[".key"],
-      user
-    });
+    commit("setUser", { userId: user[".key"], user });
   },
+
   fetchAuthUser({ dispatch, commit }) {
     const userId = firebase.auth().currentUser.uid;
     return new Promise((resolve, reject) => {
       // check if user exists in the database
-      firebase.database()
+      firebase
+        .database()
         .ref("users")
         .child(userId)
         .once("value", snapshot => {
@@ -301,69 +255,31 @@ export default {
         });
     });
   },
+
   fetchCategory: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", {
-      resource: "categories",
-      id,
-      emoji: "category gan..."
-    }),
+    dispatch("fetchItem", { resource: "categories", id, emoji: "🏷" }),
   fetchForum: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", {
-      resource: "forums",
-      id,
-      emoji: "forum gann..."
-    }),
+    dispatch("fetchItem", { resource: "forums", id, emoji: "🌧" }),
   fetchThread: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", {
-      resource: "threads",
-      id,
-      emoji: "thread gan...."
-    }),
+    dispatch("fetchItem", { resource: "threads", id, emoji: "📄" }),
   fetchPost: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", {
-      resource: "posts",
-      id,
-      emoji: "post gan..."
-    }),
+    dispatch("fetchItem", { resource: "posts", id, emoji: "💬" }),
   fetchUser: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", {
-      resource: "users",
-      id,
-      emoji: "user gan.."
-    }),
+    dispatch("fetchItem", { resource: "users", id, emoji: "🙋" }),
 
   fetchCategories: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", {
-      resource: "categories",
-      ids,
-      emoji: "categories sis"
-    }),
+    dispatch("fetchItems", { resource: "categories", ids, emoji: "🏷" }),
   fetchForums: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", {
-      resource: "forums",
-      ids,
-      emoji: "forums sis"
-    }),
+    dispatch("fetchItems", { resource: "forums", ids, emoji: "🌧" }),
   fetchThreads: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", {
-      resource: "threads",
-      ids,
-      emoji: "threads sis"
-    }),
+    dispatch("fetchItems", { resource: "threads", ids, emoji: "🌧" }),
   fetchPosts: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", {
-      resource: "posts",
-      ids,
-      emoji: "posts sis"
-    }),
+    dispatch("fetchItems", { resource: "posts", ids, emoji: "💬" }),
   fetchUsers: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", {
-      resource: "users",
-      ids,
-      emoji: "users sis"
-    }),
+    dispatch("fetchItems", { resource: "users", ids, emoji: "🙋" }),
+
   fetchAllCategories({ state, commit }) {
-    console.log(`haloo all categories`);
+    console.log("🔥", "🏷", "all");
     return new Promise((resolve, reject) => {
       firebase
         .database()
@@ -382,8 +298,9 @@ export default {
         });
     });
   },
+
   fetchItem({ state, commit }, { id, emoji, resource }) {
-    console.log(`haloo ${emoji}, ${id}`);
+    console.log("🔥‍", emoji, id);
     return new Promise((resolve, reject) => {
       firebase
         .database()
@@ -399,6 +316,7 @@ export default {
         });
     });
   },
+
   fetchItems({ dispatch }, { ids, resource, emoji }) {
     ids = Array.isArray(ids) ? ids : Object.keys(ids);
     return Promise.all(

@@ -4,7 +4,7 @@
       Create new thread in
       <i>{{forum.name}}</i>
     </h1>
-    <thread-editor @save="save" :cancel="cancel"></thread-editor>
+    <thread-editor ref="editor" @save="save" :cancel="cancel"></thread-editor>
   </div>
 </template>
 
@@ -22,9 +22,20 @@ export default {
       type: String
     }
   },
+  data() {
+    return {
+      saved: false
+    };
+  },
   computed: {
     forum() {
       return this.$store.state.forums[this.forumId];
+    },
+    hasUnsavedChanges() {
+      return (
+        (this.$refs.editor.form.title || this.$refs.editor.form.text) &&
+        !this.saved
+      );
     }
   },
   mixins: [asyncDataStatus],
@@ -38,6 +49,7 @@ export default {
           text
         })
         .then(thread => {
+          this.saved = true;
           this.$router.push({
             name: "ThreadShow",
             params: { id: thread[".key"] }
@@ -45,10 +57,7 @@ export default {
         });
     },
     cancel() {
-      this.$router.push({
-        name: "Forum",
-        params: { id: this.forum[".key"] }
-      });
+      this.$router.push({ name: "Forum", params: { id: this.forum[".key"] } });
     }
   },
   created() {
@@ -56,6 +65,20 @@ export default {
       // buat nampilin template kalau data udah ada di state
       this.asyncDataStatus_fetched();
     });
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        "Apakah kamu yakin ingin meninggalkan halaman ini? Jika iya, data yang telah kamu masukkan akan hilang."
+      );
+      if (confirmed) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
   }
 };
 </script>
