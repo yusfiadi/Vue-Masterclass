@@ -147,7 +147,7 @@ export default {
     });
   },
   registerUserWithEmailAndPassword(
-    {dispatch},
+    { dispatch },
     { email, name, username, password, avatar = null }
   ) {
     return firebase
@@ -162,7 +162,7 @@ export default {
           password,
           avatar
         });
-      });
+      })
   },
   updateThread({ commit, state, dispatch }, { title, text, id }) {
     return new Promise((resolve, reject) => {
@@ -244,6 +244,12 @@ export default {
     commit("setUser", {
       userId: user[".key"],
       user
+    });
+  },
+  fetchAuthUser({ dispatch, commit }) {
+    const userId = firebase.auth().currentUser.uid;
+    return dispatch("fetchUser", { id: userId }).then(() => {
+      commit("setAuthId", userId);
     });
   },
   fetchCategory: ({ dispatch }, { id }) =>

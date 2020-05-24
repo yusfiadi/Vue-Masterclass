@@ -24,6 +24,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
+// recommended approach to get authenticated user form firebase
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    store.dispatch("fetchAuthUser");
+  }
+});
+
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
