@@ -162,7 +162,18 @@ export default {
           password,
           avatar
         });
-      })
+      });
+  },
+  signInWithEmailAndPassword(context, { email, password }) {
+    return firebase.auth().signInWithEmailAndPassword(email, password);
+  },
+  signOut({ commit }) {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        commit("setAuthId", null);
+      });
   },
   updateThread({ commit, state, dispatch }, { title, text, id }) {
     return new Promise((resolve, reject) => {

@@ -41,9 +41,5 @@ new Vue({
   template: "<App/>",
   components: {
     App
-  },
-  beforeCreate() {
-    // fetchUser dulu sebelum fetch data2 nya
-    store.dispatch("fetchUser", { id: store.state.authId });
   }
 });
