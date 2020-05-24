@@ -1,41 +1,39 @@
 <template>
-  <div class="col-full push-top">
-    <form @submit.prevent="save">
-      <div class="form-group">
-        <label for="thread_title">Title:</label>
-        <input v-model="form.title" type="text" id="thread_title" class="form-input" name="title" />
-      </div>
+  <form @submit.prevent="save">
+    <div class="form-group">
+      <label for="thread_title">Title:</label>
+      <input v-model="form.title" type="text" id="thread_title" class="form-input" name="title" />
+    </div>
 
-      <div class="form-group">
-        <label for="thread_content">Content:</label>
-        <textarea
-          v-model="form.text"
-          id="thread_content"
-          class="form-input"
-          name="content"
-          rows="8"
-          cols="140"
-        ></textarea>
-      </div>
+    <div class="form-group">
+      <label for="thread_content">Content:</label>
+      <textarea
+        v-model="form.text"
+        id="thread_content"
+        class="form-input"
+        name="content"
+        rows="8"
+        cols="140"
+      ></textarea>
+    </div>
 
-      <div class="btn-group">
-        <button @click="cancel" class="btn btn-ghost">Cancel</button>
-        <button class="btn btn-blue" type="submit" name="Publish">{{isUpdate? 'Update':'Publish'}}</button>
-      </div>
-    </form>
-  </div>
+    <div class="btn-group">
+      <button @click.prevent="cancel" class="btn btn-ghost">Cancel</button>
+      <button class="btn btn-blue" type="submit" name="Publish">{{isUpdate ? 'Update' : 'Publish'}}</button>
+    </div>
+  </form>
 </template>
 
 <script>
 export default {
   props: {
     title: {
-      default: "",
-      type: String
+      type: String,
+      default: ""
     },
     text: {
-      default: "",
-      type: String
+      type: String,
+      default: ""
     }
   },
   data() {
@@ -47,7 +45,6 @@ export default {
     };
   },
   computed: {
-    // Ngecek ini create atau update thread
     isUpdate() {
       return !!this.title;
     }
@@ -63,5 +60,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>
