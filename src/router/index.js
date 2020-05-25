@@ -59,7 +59,7 @@ const router = new Router({
       meta: { requiresAuth: true },
       children: [
         {
-          path: 'nested',
+          path: "nested",
           component: Profile
         }
       ]
@@ -100,17 +100,20 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   console.log(`Navigating to ${to.name} from ${from.name}`);
-  // Untuk mengecek route nested yang match apakah ada meta field requiresAuth
-  if (to.matched.some(route => route.meta.requiresAuth)) {
-    // Protected route
-    if (store.state.authId) {
-      next();
+  store.dispatch("initAuthentication").then(user => {
+    // Untuk mengecek route nested yang match apakah ada meta field requiresAuth
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+      // Protected route
+
+      if (user) {
+        next();
+      } else {
+        next({ name: "SignIn" });
+      }
     } else {
-      next({ name: "SignIn" });
+      next();
     }
-  } else {
-    next();
-  }
+  });
 });
 
 export default router;

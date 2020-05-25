@@ -33,7 +33,24 @@ export default {
         return Promise.resolve(state.posts[postId]);
       });
   },
-
+  initAuthentication({ dispatch, commit, state }) {
+    return new Promise((resolve, reject) => {
+      if (state.unsubscribeAuthObserver) {
+        state.unsubscribeAuthObserver();
+      }
+      // recommended approach to get authenticated user form firebase
+      // turn off the auth state observer using unsubscribe
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        console.log("The user has changed");
+        if (user) {
+          dispatch("fetchAuthUser").then(dbUser => resolve(dbUser));
+        } else {
+          resolve(null);
+        }
+      });
+      commit("setUnsubscribeAuthObserver", unsubscribe);
+    });
+  },
   createThread({ state, commit, dispatch }, { text, title, forumId }) {
     return new Promise((resolve, reject) => {
       const threadId = firebase
