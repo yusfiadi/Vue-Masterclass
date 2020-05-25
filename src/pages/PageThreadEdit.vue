@@ -4,7 +4,7 @@
       Editing
       <i>{{thread.title}}</i>
     </h1>
-    <thread-editor ref="editor" :title="thread.title" :text="text" @save="save" :cancel="cancel"></thread-editor>
+    <thread-editor ref="editor" :title="thread.title" :text="text" @save="save" @cancel="cancel"></thread-editor>
   </div>
 </template>
 
@@ -58,10 +58,7 @@ export default {
         });
     },
     cancel() {
-      this.$router.push({
-        name: "ThreadShow",
-        params: { id: this.id }
-      });
+      this.$router.push({ name: "ThreadShow", params: { id: this.id } });
     }
   },
   created() {
