@@ -48,14 +48,19 @@ export default {
           email: this.form.email,
           password: this.form.password
         })
-        .then(() => this.$router.push("/"))
+        .then(() => this.successRedirect())
         .catch(error => alert(`Upss, ${error.message}`));
     },
     signInWithGoogle() {
       this.$store
         .dispatch("signInWithGoogle")
-        .then(() => this.$router.push("/"))
+        .then(() => this.successRedirect())
         .catch(error => alert(`Upss, ${error.message}`));
+    },
+    successRedirect() {
+      // to redirect users after logging in to the page they tried to visit
+      const redirectTo = this.$route.query.redirectTo || { name: "Home" };
+      this.$router.push(redirectTo);
     }
   },
   created() {

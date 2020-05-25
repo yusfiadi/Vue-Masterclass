@@ -107,7 +107,7 @@ router.beforeEach((to, from, next) => {
       if (user) {
         next();
       } else {
-        next({ name: "SignIn" });
+        next({ name: "SignIn", query: { redirectTo: to.path } }); // to redirect users after logging in to the page they tried to visit
       }
     } else if (to.matched.some(route => route.meta.requiresGuest)) {
       // Protected route
