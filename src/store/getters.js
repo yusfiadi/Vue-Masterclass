@@ -11,6 +11,15 @@ export default {
   //   }
   // }
   // versi arrow function
+  userPosts: state => id => {
+    const user = state.users[id]
+    if (user.posts) {
+      return Object.values(state.posts).filter(
+        post => post.userId === id
+      );
+    }
+    return [];
+  },
   userPostsCount: state => id => countObjectProperties(state.users[id].posts),
   userThreadsCount: state => id =>
     countObjectProperties(state.users[id].threads),

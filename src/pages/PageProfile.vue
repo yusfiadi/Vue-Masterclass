@@ -1,7 +1,6 @@
 <template>
   <div class="flex-grid">
-    <h1>My Profile</h1>
-    <!-- <user-profile-card v-if="!edit" :user="user"></user-profile-card>
+    <user-profile-card v-if="!edit" :user="user"></user-profile-card>
     <user-profile-card-editor v-else :user="user"></user-profile-card-editor>
 
     <div class="col-7 push-top">
@@ -12,7 +11,7 @@
 
       <hr />
       <post-list :posts="userPosts"></post-list>
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -21,6 +20,7 @@ import { mapGetters } from "vuex";
 import PostList from "@/components/PostList";
 import UserProfileCard from "@/components/UserProfileCard";
 import UserProfileCardEditor from "@/components/UserProfileCardEditor";
+import asyncDataStatus from "@/mixins/asyncDataStatus";
 
 export default {
   components: {
@@ -34,21 +34,19 @@ export default {
       default: false
     }
   },
+  mixins: [asyncDataStatus],
   computed: {
     ...mapGetters({
       user: "authUser"
     }),
     userPosts() {
-      if (this.user.posts) {
-        return Object.values(this.$store.state.posts).filter(
-          post => post.userId === this.user[".key"]
-        );
-      }
-      return [];
+      return this.$store.getters.userPosts(this.user[".key"]);
     }
   },
   created() {
-    this.$emit("ready");
+    this.$store
+      .dispatch("fetchPosts", { ids: this.user.posts })
+      .then(() => this.asyncDataStatus_fetched());
   }
 };
 </script>
