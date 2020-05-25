@@ -14,7 +14,7 @@ import NotFound from "@/pages/PageNotFound";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: "/",
@@ -56,13 +56,13 @@ export default new Router({
       name: "Profile",
       component: Profile,
       props: true,
-      beforeEnter(to, from, next) {
-        if (store.state.authId) {
-          next();
-        } else {
-          next({ name: "Home" });
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'nested',
+          component: Profile
         }
-      }
+      ]
     },
     {
       path: "/me/edit",
@@ -97,3 +97,20 @@ export default new Router({
   ],
   mode: "history"
 });
+
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating to ${to.name} from ${from.name}`);
+  // Untuk mengecek route nested yang match apakah ada meta field requiresAuth
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    // Protected route
+    if (store.state.authId) {
+      next();
+    } else {
+      next({ name: "SignIn" });
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;
