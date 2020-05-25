@@ -2,49 +2,32 @@
   <div v-if="thread && user" class="thread">
     <div>
       <p>
-        <router-link
-          :to="{
-              name: 'ThreadShow',
-              params: {
-                  id: thread['.key']
-              }
-          }"
-        >{{ thread.title }}</router-link>
+        <router-link :to="{name: 'ThreadShow', params: {id: thread['.key']}}">{{thread.title}}</router-link>
       </p>
       <p class="text-faded text-xsmall">
         By
-        <a href="#">{{ user.name }}</a>
-        ,
-        <app-date :timestamp="thread.publishedAt"></app-date>.
+        <a href="#">{{user.name}}</a>,
+        <AppDate :timestamp="thread.publishedAt" />.
       </p>
     </div>
 
     <div class="activity">
-      <p class="replies-count">{{ repliesCount }} reply</p>
+      <p class="replies-count">{{repliesCount}} replies</p>
 
-      <!-- <img
-          class="avatar-medium"
-          src="http://i0.kym-cdn.com/photos/images/facebook/000/010/934/46623-batman_pikachu_super.png"
-          alt
-      />-->
+      <!--<img class="avatar-medium" src="http://i0.kym-cdn.com/photos/images/facebook/000/010/934/46623-batman_pikachu_super.png" alt="">-->
 
-      <!-- <div>
-          <p class="text-xsmall">
-            <a href="#">Bruce Wayne</a>
-          </p>
-          <p class="text-xsmall text-faded">2 hours ago</p>
-      </div>-->
+      <!--<div>-->
+      <!--<p class="text-xsmall">-->
+      <!--<a href="#">Bruce Wayne</a>-->
+      <!--</p>-->
+      <!--<p class="text-xsmall text-faded">2 hours ago</p>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
 
 <script>
-import appDate from "./AppDate";
-
 export default {
-  components: {
-    appDate
-  },
   props: {
     thread: {
       required: true,
@@ -53,14 +36,13 @@ export default {
   },
   computed: {
     repliesCount() {
-      return this.$store.getters.threadRepliesCount(this.thread[".key"]);
+      return this.$store.getters["threads/threadRepliesCount"](
+        this.thread[".key"]
+      );
     },
     user() {
-      return this.$store.state.users[this.thread.userId];
+      return this.$store.state.users.items[this.thread.userId];
     }
   }
 };
 </script>
-
-<style>
-</style>

@@ -34,8 +34,8 @@
       </div>
 
       <div class="stats">
-        <span>{{ userPostsCount }} posts</span>
-        <span>{{ userThreadsCount }} threads</span>
+        <span>{{userPostsCount}} posts</span>
+        <span>{{userThreadsCount}} threads</span>
       </div>
 
       <hr />
@@ -72,29 +72,28 @@
 
 <script>
 export default {
-  data() {
-    return {
-      activeUser: { ...this.user }
-    };
-  },
   props: {
     user: {
       required: true,
       type: Object
     }
   },
+  data() {
+    return {
+      activeUser: { ...this.user }
+    };
+  },
   computed: {
     userThreadsCount() {
-      return this.$store.getters.userThreadsCount(this.user[".key"]);
+      return this.$store.getters["users/userThreadsCount"](this.user[".key"]);
     },
     userPostsCount() {
-      return this.$store.getters.userPostsCount(this.user[".key"]);
+      return this.$store.getters["users/userPostsCount"](this.user[".key"]);
     }
   },
-
   methods: {
     save() {
-      this.$store.dispatch("updateUser", { ...this.activeUser });
+      this.$store.dispatch("users/updateUser", { ...this.activeUser });
       this.$router.push({ name: "Profile" });
     },
     cancel() {
@@ -104,5 +103,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>

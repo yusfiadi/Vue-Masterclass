@@ -18,22 +18,21 @@
           <a @click.prevent="userDropdownOpen = !userDropdownOpen">
             <img class="avatar-small" :src="user.avatar" alt />
             <span>
-              {{ user.name }}
+              {{user.name}}
               <img class="icon-profile" src="../assets/img/arrow-profile.svg" alt />
             </span>
           </a>
+
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-
-          <div id="user-dropdown" :class="{'active-drop' : userDropdownOpen}">
+          <div id="user-dropdown" :class="{'active-drop': userDropdownOpen}">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
-                <router-link :to="{name: 'Profile'}">View Profile
-                </router-link>
+                <router-link :to="{name: 'Profile'}">View Profile</router-link>
               </li>
               <li class="dropdown-menu-item">
-                <a @click.prevent="$store.dispatch('signOut')">Sign Out</a>
+                <a @click.prevent="$store.dispatch('auth/signOut')">Sign Out</a>
               </li>
             </ul>
           </div>
@@ -47,28 +46,6 @@
           <router-link :to="{name: 'Register'}">Register</router-link>
         </li>
       </ul>
-
-      <!-- <ul>
-        <li class="navbar-item">
-          <a href="index.html">Home</a>
-        </li>
-        <li class="navbar-item">
-          <a href="category.html">Category</a>
-        </li>
-        <li class="navbar-item">
-          <a href="forum.html">Forum</a>
-        </li>
-        <li class="navbar-item">
-          <a href="thread.html">Thread</a>
-        </li>
-
-        <li class="navbar-item mobile-only">
-          <a href="profile.html">My Profile</a>
-        </li>
-        <li class="navbar-item mobile-only">
-          <a href="#">Logout</a>
-        </li>
-      </ul>-->
     </nav>
   </header>
 </template>
@@ -83,11 +60,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: "authUser"
+      user: "auth/authUser"
     })
   }
 };
 </script>
 
-<style>
+<style scoped>
 </style>

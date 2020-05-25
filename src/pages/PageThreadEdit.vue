@@ -4,32 +4,32 @@
       Editing
       <i>{{thread.title}}</i>
     </h1>
-    <thread-editor ref="editor" :title="thread.title" :text="text" @save="save" @cancel="cancel"></thread-editor>
+
+    <ThreadEditor ref="editor" :title="thread.title" :text="text" @save="save" @cancel="cancel" />
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import ThreadEditor from "@/components/ThreadEditor";
 import asyncDataStatus from "@/mixins/asyncDataStatus";
-
 export default {
   components: {
     ThreadEditor
   },
+  mixins: [asyncDataStatus],
   props: {
     id: {
-      required: true,
-      type: String
+      type: String,
+      required: true
     }
   },
-  mixins: [asyncDataStatus],
   computed: {
     thread() {
-      return this.$store.state.threads[this.id];
+      return this.$store.state.threads.items[this.id];
     },
-    // dapetin text first post dari thread
     text() {
-      const post = this.$store.state.posts[this.thread.firstPostId];
+      const post = this.$store.state.posts.items[this.thread.firstPostId];
       return post ? post.text : null;
     },
     hasUnsavedChanges() {
@@ -42,32 +42,27 @@ export default {
     }
   },
   methods: {
+    ...mapActions("threads", ["updateThread", "fetchThread"]),
+    ...mapActions("posts", ["fetchPost"]),
     save({ title, text }) {
-      // dispatch action
-      this.$store
-        .dispatch("updateThread", {
-          id: this.id,
-          title,
-          text
-        })
-        .then(thread => {
-          this.$router.push({
-            name: "ThreadShow",
-            params: { id: this.id }
-          });
-        });
+      this.updateThread({
+        id: this.id,
+        title,
+        text
+      }).then(thread => {
+        this.$router.push({ name: "ThreadShow", params: { id: this.id } });
+      });
     },
     cancel() {
       this.$router.push({ name: "ThreadShow", params: { id: this.id } });
     }
   },
   created() {
-    this.$store.dispatch("fetchThread", { id: this.id }).then(thread => {
-      this.$store.dispatch("fetchPost", { id: thread.firstPostId }).then(() => {
-        // buat nampilin template kalau data udah ada di state
+    this.fetchThread({ id: this.id })
+      .then(thread => this.fetchPost({ id: thread.firstPostId }))
+      .then(() => {
         this.asyncDataStatus_fetched();
       });
-    });
   },
   beforeRouteLeave(to, from, next) {
     if (this.hasUnsavedChanges) {
@@ -86,5 +81,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>

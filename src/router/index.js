@@ -1,17 +1,16 @@
 import Vue from "vue";
-import Router from "vue-router";
 import store from "@/store";
+import Router from "vue-router";
 import Home from "@/pages/PageHome";
-import Category from "@/pages/PageCategory";
 import ThreadShow from "@/pages/PageThreadShow";
 import ThreadCreate from "@/pages/PageThreadCreate";
 import ThreadEdit from "@/pages/PageThreadEdit";
+import Category from "@/pages/PageCategory";
 import Forum from "@/pages/PageForum";
+import Profile from "@/pages/PageProfile";
 import Register from "@/pages/PageRegister";
 import SignIn from "@/pages/PageSignIn";
-import Profile from "@/pages/PageProfile";
 import NotFound from "@/pages/PageNotFound";
-
 Vue.use(Router);
 
 const router = new Router({
@@ -64,9 +63,7 @@ const router = new Router({
       path: "/me/edit",
       name: "ProfileEdit",
       component: Profile,
-      props: {
-        edit: true
-      },
+      props: { edit: true },
       meta: { requiresAuth: true }
     },
     {
@@ -82,7 +79,7 @@ const router = new Router({
       meta: { requiresGuest: true }
     },
     {
-      path: "/signout",
+      path: "/logout",
       name: "SignOut",
       meta: { requiresAuth: true },
       beforeEnter(to, from, next) {
@@ -99,18 +96,18 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(`Navigating to ${to.name} from ${from.name}`);
-  store.dispatch("initAuthentication").then(user => {
-    // Untuk mengecek route nested yang match apakah ada meta field requiresAuth
+  console.log(`🚦 navigating to ${to.name} from ${from.name}`);
+
+  store.dispatch("auth/initAuthentication").then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
-      // Protected route
+      // protected route
       if (user) {
         next();
       } else {
-        next({ name: "SignIn", query: { redirectTo: to.path } }); // to redirect users after logging in to the page they tried to visit
+        next({ name: "SignIn", query: { redirectTo: to.path } });
       }
     } else if (to.matched.some(route => route.meta.requiresGuest)) {
-      // Protected route
+      // protected route
       if (!user) {
         next();
       } else {

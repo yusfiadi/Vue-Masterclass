@@ -1,7 +1,7 @@
 <template>
   <div v-if="asyncDataStatus_ready" class="col-full">
     <h1>{{ category.name }}</h1>
-    <category-list-item :category="category"></category-list-item>
+    <CategoryListItem :category="category" />
   </div>
 </template>
 
@@ -9,37 +9,35 @@
 import { mapActions } from "vuex";
 import CategoryListItem from "@/components/CategoryListItem";
 import asyncDataStatus from "@/mixins/asyncDataStatus";
-
 export default {
   components: {
     CategoryListItem
   },
+  mixins: [asyncDataStatus],
   props: {
     id: {
       required: true,
       type: String
     }
   },
-  mixins: [asyncDataStatus],
   computed: {
     category() {
-      return this.$store.state.categories[this.id];
+      return this.$store.state.categories.items[this.id];
     }
   },
   methods: {
-    ...mapActions(["fetchCategory", "fetchForums"])
+    ...mapActions("categories", ["fetchCategory"]),
+    ...mapActions("forums", ["fetchForums"])
   },
-  // PageHome dan PageCategory saja yg menggunakan mapActions
   created() {
     this.fetchCategory({ id: this.id })
       .then(category => this.fetchForums({ ids: category.forums }))
       .then(() => {
-        // buat nampilin template kalau data udah ada di state
         this.asyncDataStatus_fetched();
       });
   }
 };
 </script>
 
-<style>
+<style scoped>
 </style>

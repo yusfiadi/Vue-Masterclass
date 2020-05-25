@@ -18,7 +18,7 @@
         </div>
 
         <div class="form-actions text-right">
-          <router-link to="{name: 'Register">Create an account?</router-link>
+          <router-link :to="{name: 'Register'}">Create an account?</router-link>
         </div>
       </form>
 
@@ -44,21 +44,20 @@ export default {
   methods: {
     signIn() {
       this.$store
-        .dispatch("signInWithEmailAndPassword", {
+        .dispatch("auth/signInWithEmailAndPassword", {
           email: this.form.email,
           password: this.form.password
         })
         .then(() => this.successRedirect())
-        .catch(error => alert(`Upss, ${error.message}`));
+        .catch(error => alert("🤷‍️" + error.message));
     },
     signInWithGoogle() {
       this.$store
-        .dispatch("signInWithGoogle")
+        .dispatch("auth/signInWithGoogle")
         .then(() => this.successRedirect())
-        .catch(error => alert(`Upss, ${error.message}`));
+        .catch(error => alert("🤷‍️" + error.message));
     },
     successRedirect() {
-      // to redirect users after logging in to the page they tried to visit
       const redirectTo = this.$route.query.redirectTo || { name: "Home" };
       this.$router.push(redirectTo);
     }
@@ -69,5 +68,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>
