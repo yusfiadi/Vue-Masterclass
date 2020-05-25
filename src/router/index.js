@@ -37,7 +37,8 @@ const router = new Router({
       path: "/thread/create/:forumId",
       name: "ThreadCreate",
       component: ThreadCreate,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: "/thread/:id",
@@ -49,20 +50,15 @@ const router = new Router({
       path: "/thread/:id/edit",
       name: "ThreadEdit",
       component: ThreadEdit,
-      props: true
+      props: true,
+      meta: { requiresAuth: true }
     },
     {
       path: "/me",
       name: "Profile",
       component: Profile,
       props: true,
-      meta: { requiresAuth: true },
-      children: [
-        {
-          path: "nested",
-          component: Profile
-        }
-      ]
+      meta: { requiresAuth: true }
     },
     {
       path: "/me/edit",
@@ -70,21 +66,25 @@ const router = new Router({
       component: Profile,
       props: {
         edit: true
-      }
+      },
+      meta: { requiresAuth: true }
     },
     {
       path: "/register",
       name: "Register",
-      component: Register
+      component: Register,
+      meta: { requiresGuest: true }
     },
     {
       path: "/signin",
       name: "SignIn",
-      component: SignIn
+      component: SignIn,
+      meta: { requiresGuest: true }
     },
     {
       path: "/signout",
       name: "SignOut",
+      meta: { requiresAuth: true },
       beforeEnter(to, from, next) {
         store.dispatch("signOut").then(() => next({ name: "Home" }));
       }
@@ -104,11 +104,17 @@ router.beforeEach((to, from, next) => {
     // Untuk mengecek route nested yang match apakah ada meta field requiresAuth
     if (to.matched.some(route => route.meta.requiresAuth)) {
       // Protected route
-
       if (user) {
         next();
       } else {
         next({ name: "SignIn" });
+      }
+    } else if (to.matched.some(route => route.meta.requiresGuest)) {
+      // Protected route
+      if (!user) {
+        next();
+      } else {
+        next({ name: "Home" });
       }
     } else {
       next();
