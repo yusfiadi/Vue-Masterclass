@@ -5,9 +5,11 @@ import App from "./App";
 import router from "./router";
 import store from "@/store";
 import firebase from "firebase";
-import Appdate from "@/components/AppDate";
+import vuelidate from "vuelidate";
+import AppDate from "@/components/AppDate";
 
-Vue.component("AppDate", Appdate);
+Vue.use(vuelidate)
+Vue.component("AppDate", AppDate);
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
